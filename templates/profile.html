@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Profile</h1>
+    {% if user %}
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Type:</strong> {{ user.user_type }}</p>
+    {% else %}
+        <p>No user data available.</p>
+    {% endif %}
+{% endblock %}

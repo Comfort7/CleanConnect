@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Home | CleanConnect{% endblock %}
+
+{% block content %}
+    <section class="hero text-center mb-4">
+        <h1 class="text-primary">CleanConnect</h1>
+        <p class="lead">Connecting you with reliable residential cleaning services in your local area.</p>
+    </section>
+
+    <section class="services">
+        <div class="container">
+            <h2 class="text-center mb-4">Our Services</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <!-- Remove the image -->
+                        <!-- <img src="{{ url_for('static', filename='img/house_cleaning.jpg') }}" class="card-img-top" alt="General House Cleaning"> -->
+                        <div class="card-body">
+                            <h5 class="card-title">General House Cleaning</h5>
+                            <p class="card-text">Our team provides thorough cleaning services to ensure your home is spotless. We handle everything from dusting to vacuuming.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <!-- Remove the image -->
+                        <!-- <img src="{{ url_for('static', filename='img/laundry.jpg') }}" class="card-img-top" alt="Laundry"> -->
+                        <div class="card-body">
+                            <h5 class="card-title">Laundry</h5>
+                            <p class="card-text">We offer convenient laundry services, including washing, drying, and folding, so you can spend your time on more important things.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <!-- Remove the image -->
+                        <!-- <img src="{{ url_for('static', filename='img/cleaning_with_laundry.jpg') }}" class="card-img-top" alt="House Cleaning with Laundry"> -->
+                        <div class="card-body">
+                            <h5 class="card-title">House Cleaning with Laundry</h5>
+                            <p class="card-text">Combine our house cleaning and laundry services for a comprehensive solution. We take care of everything so you don't have to lift a finger.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
