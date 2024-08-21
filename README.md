@@ -1,4 +1,5 @@
 CleanConnect
+
 Owner: Comfort Ehachi
 
 Project Overview
@@ -17,6 +18,7 @@ Installation
 Clone the repository:
 
 bash
+
 git clone https://github.com/yourusername/cleanconnect.git
 cd cleanconnect
 Create a virtual environment:
@@ -27,6 +29,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 Install dependencies:
 
 bash
+
 pip install -r requirements.txt
 Set up environment variables:
 Create a .env file in the project root and add the following variables:
