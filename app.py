@@ -60,6 +60,73 @@ class CleanerService(db.Model):
 
     def __repr__(self):
         return f"CleanerService('{self.user.username}', '{self.service}')"
+    
+# Seeding Function
+def seed_data():
+    # Clean up the existing data
+    db.drop_all()
+    db.create_all()
+
+    # Seed data for cleaners
+    cleaners = [
+        {
+            "username": "cleaner1",
+            "email": "cleaner1@example.com",
+            "phone_number": "+12345678901",
+            "location": "Kenya",
+            "password": "password1",
+            "role": "cleaner",
+            "services": ["General House Cleaning", "Laundry"]
+        },
+        {
+            "username": "cleaner2",
+            "email": "cleaner2@example.com",
+            "phone_number": "+12345678902",
+            "location": "Kenya",
+            "password": "password2",
+            "role": "cleaner",
+            "services": ["House Cleaning with Laundry"]
+        },
+        {
+            "username": "cleaner3",
+            "email": "cleaner3@example.com",
+            "phone_number": "+12345678903",
+            "location": "Kenya",
+            "password": "password3",
+            "role": "cleaner",
+            "services": ["General House Cleaning", "Laundry", "House Cleaning with Laundry"]
+        },
+    ]
+
+    # Insert data into the database
+    for cleaner_data in cleaners:
+        cleaner = User(
+            username=cleaner_data['username'],
+            email=cleaner_data['email'],
+            phone_number=cleaner_data['phone_number'],
+            location=cleaner_data['location'],
+            role=cleaner_data['role']
+        )
+        cleaner.set_password(cleaner_data['password'])
+        db.session.add(cleaner)
+        db.session.commit()
+
+        for service in cleaner_data['services']:
+            cleaner_service = CleanerService(user_id=cleaner.id, service=service)
+            db.session.add(cleaner_service)
+        
+        db.session.commit()
+
+    print("Database has been seeded successfully!")
+
+# Route to trigger seeding
+@app.route('/api/seed', methods=['POST'])
+def seed():
+    try:
+        seed_data()
+        return jsonify({'message': 'Database seeded successfully!'}), 200
+    except Exception as e:
+        return jsonify({'message': f'An error occurred: {str(e)}'}), 500
 
 @app.route('/api/test', methods=['POST'])
 def test():
@@ -135,39 +202,6 @@ def register():
 def protected():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
-
-# Service Request Endpoints
-@app.route('/requests', methods=['POST'])
-@jwt_required()
-def create_request():
-    current_user = get_jwt_identity()
-    if current_user['role'] != 'client':
-        return jsonify({'message': 'Only clients can create requests'}), 403
-
-    data = request.get_json()
-    new_request = CleanerRequest(
-        location=data['location'],
-        service=data['service'],
-        client_id=current_user['id']
-    )
-    db.session.add(new_request)
-    db.session.commit()
-    return jsonify({'message': 'Request created successfully'}), 201
-
-@app.route('/requests', methods=['GET'])
-@jwt_required()
-def get_requests():
-    current_user = get_jwt_identity()
-    if current_user['role'] == 'client':
-        requests = CleanerRequest.query.filter_by(client_id=current_user['id']).all()
-    elif current_user['role'] == 'cleaner':
-        requests = CleanerRequest.query.filter_by(cleaner_id=None).all()
-    else:
-        return jsonify({'message': 'Unauthorized access'}), 403
-
-    requests_list = [{'id': r.id, 'location': r.location, 'service': r.service, 'status': r.status} for r in requests]
-    return jsonify(requests=requests_list), 200
-    
 
 @app.route('/api/connect_with_cleaner', methods=['POST'])
 @jwt_required()
@@ -326,14 +360,32 @@ def update_profile():
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': f'An error occurred: {str(e)}'}), 500
-
-
-@app.route('/api/admin', methods=['GET'])
-def admin():
-    if 'user_id' not in session or session.get('role') != 'admin':
-        return jsonify({'message': 'Admin access required.'}), 403
     
-    return jsonify({'message': 'Admin page'}), 200
+@app.route('/api/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    user_list = [
+        {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'phone_number': user.phone_number,
+            'location': user.location,
+            'role': user.role
+        } for user in users
+    ]
+    return jsonify(user_list), 200
+
+@app.route('/api/cleaner_services', methods=['GET'])
+def get_cleaner_services():
+    services = CleanerService.query.all()
+    service_list = [
+        {
+            'user_id': service.user_id,
+            'service': service.service
+        } for service in services
+    ]
+    return jsonify(service_list), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
